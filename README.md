@@ -1,6 +1,6 @@
 # Surface Laplacian
 
-A Python implementation of surface laplacian of triangle meshes. Notably, stiffness and mass matrices can be computed passing arbitary weight function. In ```operators.py```, are implemented the three estimations published on [Huiskamp 1991](https://doi.org/10.1016/0021-9991(91)90286-T)  and the classic [cotangent formula](https://www.cs.cmu.edu/~kmcrane/Projects/Other/nDCotanFormula.pdf) . 
+A Python implementation of surface laplacian of triangle meshes. Notably, passing arbitrary weight functions can compute stiffness and mass matrices. In ```operators.py```, the three estimations published by [Huiskamp 1991](https://doi.org/10.1016/0021-9991(91)90286-T) and the classic [cotangent formula](https://www.cs.cmu.edu/~kmcrane/Projects/Other/nDCotanFormula.pdf) are implemented.
 
 ## Usage
 
@@ -34,4 +34,4 @@ if Laplacian operator $L_o=M^{-1}L$ is used to estimate $\nabla^2 f(\phi)$ troug
 
 <img src="export/cotan_3.png" alt="drawing" width="400"/>
 
-**remark** the triangle color is computed with barycentric interpolation and *viridis* colormap is normalized from -1 to 1.
+**remark** the triangle color is computed with barycentric interpolation and *viridis* colormap is normalized from -2 to 2.
