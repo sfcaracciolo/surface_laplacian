@@ -1,0 +1,11 @@
+Lib/
+Scripts/
+Include/
+.python-version
+pyvenv.cfg
+dist/
+__pycache__
+share/
+etc/
+*.eps
+*.pdf
