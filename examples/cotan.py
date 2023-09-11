@@ -4,63 +4,59 @@ from src.surface_laplacian import SurfaceLaplacian, operators
 from half_edge import HalfEdgeModel 
 from open3d.geometry import TriangleMesh
 from geometric_tools import cartesian_to_spherical_coords
-import geometric_plotter
+from geometric_plotter import Plotter
 from isotropic_remesher import IsotropicRemesher
 import pathlib 
-import robust_laplacian 
+filename = pathlib.Path(__file__).stem
 
-sphere = TriangleMesh().create_sphere(radius=1, resolution=15)
-model = HalfEdgeModel(sphere.vertices, sphere.triangles)
-
-remesher = IsotropicRemesher(model)
-remesher.isotropic_remeshing(
-    .2, 
-    iter=5, 
-    explicit=False, 
-    foldover=10,
-    sliver=False
-)
-model.clean()
+path = pathlib.Path('data/mesh.npz')
+if not path.exists():
+    sphere = TriangleMesh().create_sphere(radius=1, resolution=15)
+    model = HalfEdgeModel(sphere.vertices, sphere.triangles)
+    remesher = IsotropicRemesher(model)
+    remesher.isotropic_remeshing(
+        .1, 
+        iter=10, 
+        explicit=False, 
+        foldover=10,
+        sliver=False
+    )
+    model.clean()
+    np.savez(path, vertices=model.vertices, triangles=model.triangles)
+else:
+    npz = np.load(path)
+    model = HalfEdgeModel(npz['vertices'], npz['triangles'])
 
 spherical = cartesian_to_spherical_coords(model.vertices)
 ρ, θ, φ = spherical[:,0], spherical[:,1], spherical[:,2]
 f = np.cos(φ) # function with simple laplacian
 lf = -2.*f # analytic laplacian of f
-
 sl = SurfaceLaplacian(model)
-triangle_mesh = np.asarray(model.vertices), np.asarray(model.triangles)
-vmin, vmax = lf.min(), lf.max()
-ax_config = ((50,-150,0), 1.)
-
-geometric_plotter.set_export()
-
-# analytic laplacian plotting
-ax = geometric_plotter.figure(figsize=(5,5))
-geometric_plotter.plot_trisurf(ax, *triangle_mesh, vertex_colors=lf, vmin=vmin, vmax=vmax)
-geometric_plotter.config_ax(ax, *ax_config),
-
-geometric_plotter.execute(folder='E:\Repositorios\surface_laplacian\export\\', name=pathlib.Path(__file__).stem + '_1')
-
-
-# estimation of laplacian with robust_laplacian
-
-L, M = robust_laplacian.mesh_laplacian(*triangle_mesh)
-ax = geometric_plotter.figure(figsize=(5,5))
-estimation_rl = sp.sparse.linalg.inv(M) @ (-L) @ f
-geometric_plotter.plot_trisurf(ax, *triangle_mesh, vertex_colors=estimation_rl, vmin=vmin, vmax=vmax)
-geometric_plotter.config_ax(ax, *ax_config),
-
-geometric_plotter.execute(folder='E:\Repositorios\surface_laplacian\export\\', name=pathlib.Path(__file__).stem + '_2')
-
-# estimation of laplacian with surface_laplacian
-
 M = sl.mass(operators.mixed).tocsc()
-L = sl.stiffness(operators.cotan)
-estimation_sl = sp.sparse.linalg.inv(M) @ L @ f
-ax = geometric_plotter.figure(figsize=(5,5))
-geometric_plotter.plot_trisurf(ax, *triangle_mesh, vertex_colors=estimation_sl, vmin=vmin, vmax=vmax)
-geometric_plotter.config_ax(ax, *ax_config),
+S = sl.stiffness(operators.cotan)
+L = sp.sparse.linalg.inv(M) @ S
 
-geometric_plotter.execute(folder='E:\Repositorios\surface_laplacian\export\\', name=pathlib.Path(__file__).stem+ '_3')
+Plotter.set_export()
 
+p = Plotter(False, figsize=(10,8))
+p.add_trisurf(
+    np.asarray(model.vertices),
+    np.asarray(model.triangles),
+    vertex_values=lf,
+    vmin=lf.min(),
+    vmax=lf.max(),
+    colorbar=True
+)
+# estimation of laplacian with surface_laplacian
+p.add_trisurf(
+    np.asarray(model.vertices),
+    np.asarray(model.triangles),
+    vertex_values=L@f,
+    vmin=lf.min(),
+    vmax=lf.max(),
+    translate=(3,0,0)
+)
+p.camera(view=(-90,0,0), zoom=1.),
+p.save(folder='figs/', name=filename)
 
+Plotter.show()
