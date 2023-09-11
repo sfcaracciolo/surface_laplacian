@@ -26,12 +26,8 @@ or ```operators.voro```, ```operators.mixed``` for barycentric, Voronoi or mixed
 
 ## Example
 
-Let $f(\phi) = \cos(\phi)$, therefore $\nabla^2 f(\phi) = -2 f(\phi)$. Evaluationg $\nabla^2f$ in a unitary sphere,
+Let $f(\phi) = \cos(\phi)$, therefore $\nabla^2 f(\phi) = -2 f(\phi)$. The discrete Laplacian matrix  $L=M^{-1}S$ is used to estimate $\nabla^2 f(\phi)$ trough $Lf_i$ on a unitary sphere,
 
-<img src="export/cotan_1.png" alt="drawing" width="400"/>
+<img src="figs/cotan.png" alt="drawing" width=""/>
 
-if Laplacian operator $L_o=M^{-1}L$ is used to estimate $\nabla^2 f(\phi)$ trough $L_o f_i$, the result is
-
-<img src="export/cotan_3.png" alt="drawing" width="400"/>
-
-**remark** the triangle color is computed with barycentric interpolation and *viridis* colormap is normalized from -2 to 2.
+where top sphere is evaluated on $-2 f(\phi)$ and bottom on  $Lf_i$.

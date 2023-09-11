@@ -9,3 +9,5 @@ share/
 etc/
 *.eps
 *.pdf
+data/
+
