@@ -30,4 +30,4 @@ Let $f(\phi) = \cos(\phi)$, therefore $\nabla^2 f(\phi) = -2 f(\phi)$. The discr
 
 <img src="figs/cotan.png" alt="drawing" width=""/>
 
-where top sphere is evaluated on $-2 f(\phi)$ and bottom on  $Lf_i$.
+where right sphere is evaluated on $-2 f(\phi)$ and left on  $Lf_i$.
