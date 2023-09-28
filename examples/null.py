@@ -8,8 +8,6 @@ from geometric_plotter import Plotter
 from isotropic_remesher import IsotropicRemesher
 import pathlib 
 
-Plotter.set_export()
-
 filename = pathlib.Path(__file__).stem
 
 path = pathlib.Path('data/mesh.npz')
@@ -41,7 +39,7 @@ L = sp.sparse.linalg.inv(M) @ S
 lf = L@f
 vmin, vmax = lf.min(), lf.max()
 
-p = Plotter(False, figsize=(5,5))
+p = Plotter(figsize=(5,5))
 p.add_trisurf(
     *data,
     vertex_values=lf,

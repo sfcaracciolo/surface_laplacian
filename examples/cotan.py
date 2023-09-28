@@ -36,9 +36,7 @@ M = sl.mass(operators.mixed).tocsc()
 S = sl.stiffness(operators.cotan)
 L = sp.sparse.linalg.inv(M) @ S
 
-Plotter.set_export()
-
-p = Plotter(False, figsize=(10,8))
+p = Plotter(figsize=(10,8))
 p.add_trisurf(
     np.asarray(model.vertices),
     np.asarray(model.triangles),
@@ -56,7 +54,7 @@ p.add_trisurf(
     vmax=lf.max(),
     translate=(3,0,0)
 )
-p.camera(view=(-90,0,0), zoom=1.),
+p.camera(view=(0,90,0), zoom=1.),
 p.save(folder='figs/', name=filename)
 
 Plotter.show()
