@@ -6,7 +6,7 @@ def rard(model: HalfEdgeModel, h_index: int) -> float:
     """Regular angles and regular distances weights"""
     ri = np.mean(list(map(lambda b: b.get_distance(), model.edge_ring(h_index))))
     M = model.valence(h_index)
-    return 4./(M*ri**2)
+    return 4./(M*ri*ri)
 
 def raid(model: HalfEdgeModel, h_index: int) -> float:
     """Regular angles and irregular distances weights"""
@@ -20,8 +20,8 @@ def iaid(model: HalfEdgeModel, h_index: int) -> float:
     ri = np.mean(list(map(lambda b: b.get_distance(), model.edge_ring(h_index))))
     rik = model.edge_len(h_index)
     t = angle_factor(model, h_index)
-    T = map(lambda h: angle_factor(model, h), model.one_ring(h_index))
-    return 4.*t/(ri*rik*sum(T))
+    T = sum(map(lambda h: angle_factor(model, h), model.one_ring(h_index)))
+    return 4.*(t/T)/(ri*rik)
 
 def cotan(model: HalfEdgeModel, h_index: int) -> float:
     p_index = model.get_next_index_on_ring(h_index, False)
